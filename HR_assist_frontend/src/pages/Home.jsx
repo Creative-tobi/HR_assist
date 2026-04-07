@@ -21,7 +21,7 @@ const Home = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/analyze",
+        "https://hr-assist-xcst.onrender.com/api/analyze",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

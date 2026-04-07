@@ -33,7 +33,7 @@ TalentDecode is an AI-powered HR Co-Pilot designed for professional services and
 
 ### 1. Clone the Repository
 \`\`\`bash
-git clone https://github.com/yourusername/talent-decode.git
+git clone https://github.com/Creative-tobi/HR_assist
 cd talent-decode
 \`\`\`
 
@@ -69,4 +69,4 @@ Open your browser and navigate to `http://localhost:5173`.
 3. Click **Analyze Candidate Match** to decode the data.
 
 ---
-*Developed by Geek and the Growth Team.*
+*Developed by Creaive-tobi (Geek).*
