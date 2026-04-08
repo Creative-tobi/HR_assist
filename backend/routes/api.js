@@ -1,6 +1,6 @@
 const express = require("express");
 const multer = require("multer");
-const pdfParse = require("pdf-parse");
+const pdfParse = require("pdf-parse-new");
 const { Groq } = require("groq-sdk");
 const router = express.Router();
 
@@ -25,18 +25,23 @@ router.post("/analyze", upload.single("resume"), async (req, res) => {
       return res.status(400).json({ error: "Missing Job Description." });
     }
 
-    //Extract text from the PDF buffer
+    // Extract text from the PDF buffer
     let resumeText = "";
     try {
+      // Force the parser to read the buffer directly
       const pdfData = await pdfParse(req.file.buffer);
       resumeText = pdfData.text;
+
+      if (!resumeText || resumeText.trim() === "") {
+        throw new Error("PDF extracted successfully, but no text was found.");
+      }
     } catch (pdfError) {
-      console.error("[PDF PARSE ERROR]:", pdfError);
+      console.error("[PDF PARSE FATAL ERROR]:", pdfError);
       return res
         .status(500)
         .json({
           error:
-            "Could not read the uploaded PDF file. Ensure it is a valid text-based PDF.",
+            "Failed to extract text. Make sure you are uploading a standard, text-based PDF (not an image or scan).",
         });
     }
 
@@ -78,7 +83,7 @@ router.post("/analyze", upload.single("resume"), async (req, res) => {
     //Call the Groq API (using the blazing fast llama3 model)
     const chatCompletion = await groq.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
-      model: "llama3-8b-8192",
+      model: "llama-3.1-8b-instant",
       temperature: 0.1, // Extremely low temperature to force deterministic JSON output
     });
 
@@ -100,12 +105,9 @@ router.post("/analyze", upload.single("resume"), async (req, res) => {
       decodedData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error("[JSON PARSE ERROR] AI Output was:", cleanedText);
-      return res
-        .status(500)
-        .json({
-          error:
-            "AI failed to format the response correctly. Please try again.",
-        });
+      return res.status(500).json({
+        error: "AI failed to format the response correctly. Please try again.",
+      });
     }
 
     // Send the decoded data to the React frontend
