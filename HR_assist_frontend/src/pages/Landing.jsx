@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Briefcase,
   Zap,
@@ -26,12 +27,16 @@ const Landing = ({ onGetStarted }) => {
           </span>
         </div>
         <div className="flex gap-4 items-center">
-          <button className="sm:block text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">
+          <Link
+            to="/product"
+            className="hidden sm:block text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">
             Product
-          </button>
-          <button className="sm:block text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">
+          </Link>
+          <Link
+            to="/pricing"
+            className="hidden sm:block text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">
             Pricing
-          </button>
+          </Link>
           <button
             onClick={onGetStarted}
             className="text-sm hidden md:flex font-bold bg-white border border-slate-200 shadow-sm hover:shadow text-slate-700 px-4 py-2 rounded-lg transition-all hover:border-blue-300 hover:text-blue-600">
@@ -130,9 +135,9 @@ const Landing = ({ onGetStarted }) => {
           </p>
           <div className="flex items-center gap-16 flex-wrap font-black text-xl text-slate-500">
             <marquee behavior="" direction="left">
-            <span className="pl-4">Acme Corp</span>
-            <span className="pl-4">GlobalTech</span>
-            <span className="pl-4">NexusFlow</span>
+              <span className="pl-4">Acme Corp</span>
+              <span className="pl-4">GlobalTech</span>
+              <span className="pl-4">NexusFlow</span>
             </marquee>
           </div>
         </div>
