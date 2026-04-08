@@ -34,7 +34,7 @@ const Landing = ({ onGetStarted }) => {
           </button>
           <button
             onClick={onGetStarted}
-            className="text-sm hidden font-bold bg-white border border-slate-200 shadow-sm hover:shadow text-slate-700 px-4 py-2 rounded-lg transition-all hover:border-blue-300 hover:text-blue-600">
+            className="text-sm hidden md:flex font-bold bg-white border border-slate-200 shadow-sm hover:shadow text-slate-700 px-4 py-2 rounded-lg transition-all hover:border-blue-300 hover:text-blue-600">
             Sign In
           </button>
         </div>
