@@ -123,4 +123,52 @@ router.post("/analyze", upload.single("resume"), async (req, res) => {
   }
 });
 
+
+router.post('/simulate', async (req, res) => {
+  try {
+    const { originalQuestion, history, newMessage, strengths, weaknesses } = req.body;
+
+    //  Build the Persona Prompt
+    const systemPrompt = `
+      You are a candidate in a job interview. Act naturally, conversationally, and professionally. 
+      Here is your profile context based on your resume analysis:
+      - Your verified strengths: ${strengths.join(", ")}.
+      - Your missing skills or gaps: ${weaknesses.join(", ")}.
+
+      The interviewer originally asked you this question: "${originalQuestion}"
+      
+      RULES:
+      1. Stay completely in character. DO NOT say "As an AI...".
+      2. Keep your answers concise (under 3 or 4 sentences).
+      3. If the interviewer asks about a skill gap, be honest but frame it as a learning opportunity.
+      4. Respond directly to the interviewer's newest message.
+    `;
+
+    //  Format the chat history for Groq
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      ...history.map(msg => ({ 
+        role: msg.role === 'interviewer' ? 'user' : 'assistant', 
+        content: msg.content 
+      })),
+      { role: 'user', content: newMessage }
+    ];
+
+    // Call the Llama 3 Engine
+    const chatCompletion = await groq.chat.completions.create({
+      messages: messages,
+      model: "llama-3.1-8b-instant",
+      temperature: 0.6, 
+    });
+
+    const aiReply = chatCompletion.choices[0]?.message?.content;
+    
+    res.status(200).json({ reply: aiReply });
+
+  } catch (error) {
+    console.error('[SIMULATOR ERROR]:', error);
+    res.status(500).json({ error: 'Candidate AI disconnected.' });
+  }
+});
+
 module.exports = router;

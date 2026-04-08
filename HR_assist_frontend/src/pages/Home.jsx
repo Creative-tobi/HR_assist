@@ -1,14 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import Uploader from "../components/Uploader";
 import Dashboard from "../components/Dashboard";
-import { Briefcase, Loader2 } from "lucide-react";
+import { Briefcase, Loader2, Sparkles, Terminal, X } from "lucide-react";
+
+const loadingSteps = [
+  "Initializing Llama-3 core engine...",
+  "Parsing PDF document structure...",
+  "Extracting candidate competencies...",
+  "Cross-referencing against Job Description...",
+  "Calculating deterministic match score...",
+  "Generating strategic interview protocol...",
+  "Finalizing dashboard...",
+];
+
+const SAMPLE_JD =
+  "We are looking for a Senior Frontend Developer with 5+ years of experience in React, modern JavaScript (ES6+), and Vite. The ideal candidate will have a strong understanding of state management, Tailwind CSS, and REST API integration. Experience with CI/CD pipelines and AWS is a major plus.";
 
 const Home = () => {
   const [jobDescription, setJobDescription] = useState("");
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingTextIndex, setLoadingTextIndex] = useState(0);
   const [results, setResults] = useState(null);
+
+  useEffect(() => {
+    let interval;
+    if (loading) {
+      interval = setInterval(() => {
+        setLoadingTextIndex((prev) =>
+          prev < loadingSteps.length - 1 ? prev + 1 : prev,
+        );
+      }, 1200);
+    } else {
+      setLoadingTextIndex(0);
+    }
+    return () => clearInterval(interval);
+  }, [loading]);
 
   const handleAnalysis = async () => {
     if (!file || !jobDescription)
@@ -38,60 +67,110 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-slate-800 font-sans selection:bg-blue-200">
-      {/* Premium Glassmorphism Header */}
-      <header className="sticky top-0 z-10 backdrop-blur-md bg-white/70 border-b border-slate-200/50">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 selection:bg-blue-200">
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/70 border-b border-slate-200/50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-blue-600 p-2 rounded-lg shadow-sm shadow-blue-200">
+          <Link
+            to="/"
+            className="flex items-center gap-3 group cursor-pointer transition-all">
+            <div className="bg-blue-600 p-2 rounded-lg shadow-sm shadow-blue-200 group-hover:scale-105 transition-transform duration-300">
               <Briefcase className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors duration-300">
               TalentDecode
             </h1>
-            <span className="bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider ml-2 hidden sm:block">
-              HR Co-Pilot
-            </span>
+          </Link>
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-full border border-slate-200 text-sm font-bold text-slate-500">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Engine Online
           </div>
         </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-12">
         {!results ? (
-          <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
-            <div className="p-8 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-10">
-              {/* Left Side: Upload */}
+          <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/40 border border-slate-200 overflow-hidden transition-all duration-500 relative">
+            {loading && (
+              <div className="absolute inset-0 bg-slate-900/95 z-50 flex flex-col items-center justify-center p-6 backdrop-blur-sm animate-in fade-in duration-300">
+                <Terminal className="w-12 h-12 text-blue-400 mb-6 animate-pulse" />
+                <div className="h-8 flex items-center justify-center">
+                  <p
+                    className="text-blue-400 font-mono text-lg font-medium tracking-tight animate-in slide-in-from-bottom-2 fade-in duration-300"
+                    key={loadingTextIndex}>
+                    {`> ${loadingSteps[loadingTextIndex]}`}
+                  </p>
+                </div>
+                <div className="w-64 h-1.5 bg-slate-800 rounded-full mt-8 overflow-hidden">
+                  <div
+                    className="h-full bg-blue-500 animate-pulse"
+                    style={{
+                      width: `${((loadingTextIndex + 1) / loadingSteps.length) * 100}%`,
+                      transition: "width 1s ease-in-out",
+                    }}></div>
+                </div>
+              </div>
+            )}
+
+            <div className="p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-12">
               <div className="flex flex-col h-full">
-                <h2 className="text-lg font-bold text-slate-800 mb-4">
-                  1. Upload Candidate Profile
-                </h2>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                    1
+                  </div>
+                  <h2 className="text-xl font-bold text-slate-900">
+                    Upload Profile
+                  </h2>
+                </div>
                 <Uploader file={file} setFile={setFile} />
               </div>
 
-              {/* Right Side: JD & Action */}
               <div className="flex flex-col h-full">
-                <h2 className="text-lg font-bold text-slate-800 mb-4">
-                  2. Define Role Requirements
-                </h2>
-                <textarea
-                  className="flex-grow p-5 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-50 focus:border-blue-500 focus:outline-none resize-none transition-all text-sm leading-relaxed text-slate-700 shadow-inner"
-                  placeholder="Paste the target job description, required skills, and daily responsibilities here..."
-                  value={jobDescription}
-                  onChange={(e) => setJobDescription(e.target.value)}
-                />
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                      2
+                    </div>
+                    <h2 className="text-xl font-bold text-slate-900">
+                      Define Role
+                    </h2>
+                  </div>
+                  <button
+                    onClick={() => setJobDescription(SAMPLE_JD)}
+                    className="text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" /> Load Sample
+                  </button>
+                </div>
+
+                <div className="relative flex-grow flex flex-col">
+                  <textarea
+                    className="flex-grow p-5 pr-10 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-50 focus:border-blue-500 focus:outline-none resize-none transition-all text-sm leading-relaxed text-slate-700 shadow-inner bg-slate-50/50"
+                    placeholder="Paste the target job description, required skills, and daily responsibilities here..."
+                    value={jobDescription}
+                    onChange={(e) => setJobDescription(e.target.value)}
+                    // NEW UX MAGIC: If the user clicks into the box and it contains the sample text, highlight it all!
+                    onFocus={(e) => {
+                      if (e.target.value === SAMPLE_JD) {
+                        e.target.select();
+                      }
+                    }}
+                  />
+                  {/* NEW UX MAGIC: A clear button appears when there is text */}
+                  {jobDescription && (
+                    <button
+                      onClick={() => setJobDescription("")}
+                      className="absolute top-3 right-3 p-1.5 bg-slate-200 hover:bg-rose-100 text-slate-500 hover:text-rose-600 rounded-lg transition-colors"
+                      title="Clear Text">
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
 
                 <button
                   onClick={handleAnalysis}
                   disabled={loading}
-                  className="mt-6 w-full relative group overflow-hidden bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 disabled:bg-slate-300 disabled:cursor-not-allowed shadow-lg shadow-blue-200 flex justify-center items-center gap-2">
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Decoding Data...</span>
-                    </>
-                  ) : (
-                    <span>Analyze Candidate Match</span>
-                  )}
+                  className="mt-6 w-full group relative overflow-hidden bg-slate-900 hover:bg-blue-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 shadow-lg flex justify-center items-center gap-2">
+                  <Sparkles className="w-5 h-5 group-hover:animate-spin" />
+                  <span>Decode Candidate Data</span>
                 </button>
               </div>
             </div>
