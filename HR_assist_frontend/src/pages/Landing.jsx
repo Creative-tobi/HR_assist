@@ -21,20 +21,20 @@ const Landing = ({ onGetStarted }) => {
           <div className="bg-blue-600 p-2 rounded-lg shadow-md shadow-blue-200/50">
             <Briefcase className="w-6 h-6 text-white" />
           </div>
-          <span className="text-2xl font-extrabold text-slate-900 tracking-tight">
+          <span className="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight">
             TalentDecode
           </span>
         </div>
         <div className="flex gap-4 items-center">
-          <button className="hidden sm:block text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">
+          <button className="sm:block text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">
             Product
           </button>
-          <button className="hidden sm:block text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">
+          <button className="sm:block text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">
             Pricing
           </button>
           <button
             onClick={onGetStarted}
-            className="text-sm font-bold bg-white border border-slate-200 shadow-sm hover:shadow text-slate-700 px-4 py-2 rounded-lg transition-all hover:border-blue-300 hover:text-blue-600">
+            className="text-sm hidden font-bold bg-white border border-slate-200 shadow-sm hover:shadow text-slate-700 px-4 py-2 rounded-lg transition-all hover:border-blue-300 hover:text-blue-600">
             Sign In
           </button>
         </div>
@@ -128,10 +128,12 @@ const Landing = ({ onGetStarted }) => {
           <p className="font-bold text-slate-400 text-sm tracking-widest uppercase text-center md:text-left">
             Trusted by modern hiring teams
           </p>
-          <div className="flex items-center gap-8 md:gap-16 font-black text-xl text-slate-500">
-            <span>Acme Corp</span>
-            <span>GlobalTech</span>
-            <span>NexusFlow</span>
+          <div className="flex items-center gap-16 flex-wrap font-black text-xl text-slate-500">
+            <marquee behavior="" direction="left">
+            <span className="pl-4">Acme Corp</span>
+            <span className="pl-4">GlobalTech</span>
+            <span className="pl-4">NexusFlow</span>
+            </marquee>
           </div>
         </div>
       </section>

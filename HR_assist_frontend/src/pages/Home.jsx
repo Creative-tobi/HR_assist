@@ -76,7 +76,7 @@ const Home = () => {
             <div className="bg-blue-600 p-2 rounded-lg shadow-sm shadow-blue-200 group-hover:scale-105 transition-transform duration-300">
               <Briefcase className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors duration-300">
+            <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors duration-300">
               TalentDecode
             </h1>
           </Link>
@@ -137,7 +137,7 @@ const Home = () => {
                   <button
                     onClick={() => setJobDescription(SAMPLE_JD)}
                     className="text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
-                    <Sparkles className="w-3 h-3" /> Load Sample
+                    <Sparkles className="w-3 h-3" /> <span className="hidden md:flex">Load Sample</span>
                   </button>
                 </div>
 
